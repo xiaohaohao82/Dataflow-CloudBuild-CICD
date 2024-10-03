@@ -31,5 +31,12 @@ steps:
   dir: 'Dataflow-CloudBuild-CICD/target'
   id: 'deploy-jar'
 
+- name: 'apache/airflow:slim-2.3.1-python3.7'
+  entrypoint: 'python'
+  args: ['test_compare_xcom_maps.py']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  env: ['PYTHONPATH=/home/airflow/.local/lib/python3.7/site-packages']
+  id: 'unit-test-on-operator-code'
+
 options:
   logging: CLOUD_LOGGING_ONLY
