@@ -15,9 +15,16 @@ steps:
 - name: gcr.io/cloud-builders/git
   args: ['clone', 'https://github.com/xiaohaohao82/Dataflow-CloudBuild-CICD.git']
   id: 'check-out-source-code'
+
 - name: labelinsight/java-maven:3.6.3-jdk-11
   entrypoint: mvn
-  args: ['clean install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
+  args: [ 'clean' ]
+  dir: 'Dataflow-CloudBuild-CICD'
+  id: 'mvn-clean'
+
+- name: labelinsight/java-maven:3.6.3-jdk-11
+  entrypoint: mvn
+  args: ['install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
   dir: 'Dataflow-CloudBuild-CICD'
   id: 'build-jar'
 
