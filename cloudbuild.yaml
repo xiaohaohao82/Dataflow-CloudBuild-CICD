@@ -17,7 +17,7 @@ steps:
   id: 'check-out-source-code'
 - name: gcr.io/cloud-builders/mvn:3.5.0-jdk-8
   args: ['package', '-q']
-  dir: 'Dataflow-CloudBuild-CICD/data-processing-code'
+  dir: 'Dataflow-CloudBuild-CICD'
   id: 'build-jar'
 
 options:
