@@ -16,6 +16,10 @@ steps:
   args: ['clone', 'https://github.com/xiaohaohao82/Dataflow-CloudBuild-CICD.git']
   id: 'check-out-source-code'
 
+- name: maven:3.3-jdk-8
+  entrypoint: mvn
+  args: ['clean']
+
 - name: labelinsight/java-maven:3.6.3-jdk-11
   entrypoint: mvn
   args: [ 'clean' ]
