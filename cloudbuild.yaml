@@ -22,7 +22,7 @@ steps:
 
 - name: maven:3.6.3-jdk-11
   entrypoint: mvn
-  args: [''install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true'']
+  args: ['install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
   dir: 'Dataflow-CloudBuild-CICD'
   id: 'build-jar'
 
