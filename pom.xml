@@ -135,10 +135,6 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>${maven-exec-plugin.version}</version>
@@ -277,6 +273,11 @@
             <artifactId>byte-buddy</artifactId>
             <version>1.15.3</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>3.3.1</version>
+            <type>maven-plugin</type>
+        </dependency>
     </dependencies>
 </project>
