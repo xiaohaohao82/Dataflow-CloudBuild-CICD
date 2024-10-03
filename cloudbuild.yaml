@@ -20,6 +20,10 @@ steps:
   entrypoint: mvn
   args: ['clean']
 
+- name: maven:3.6.3-jdk-11
+  entrypoint: mvn
+  args: ['clean']
+
 - name: labelinsight/java-maven:3.6.3-jdk-11
   entrypoint: mvn
   args: [ 'clean' ]
