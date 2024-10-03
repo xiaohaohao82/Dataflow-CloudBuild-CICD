@@ -69,7 +69,7 @@ steps:
   id: 'wait-for-dag-deployed-on-composer'
 
 - name: gcr.io/cloud-builders/gcloud
-  args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', '${_COMPOSER_REGION}', 'dags', 'trigger', '--', '${_COMPOSER_DAG_NAME_TEST}', '--run-id=$BUILD_ID']
+  args: ['composer', 'environments', 'run', 'avalanche-cloud-composer-environment', '--location', 'europe-west1', 'dags', 'trigger', '--', 'test_word_count', '--run-id=$BUILD_ID']
   id: 'trigger-pipeline-execution'
 
 options:
