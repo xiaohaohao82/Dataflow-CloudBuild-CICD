@@ -23,12 +23,12 @@ steps:
 - name: maven:3.6.3-jdk-11
   entrypoint: mvn
   args: ['install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
-  dir: 'Dataflow-CloudBuild-CICD/data-processing-code'
+  dir: 'Dataflow-CloudBuild-CICD'
   id: 'build-jar'
 
 - name: gcr.io/cloud-builders/gsutil
   args: ['cp', '*bundled*.jar', 'gs://dataflow-cicd-434314-composer-dataflow-source-test/dataflow_deployment_$BUILD_ID.jar']
-  dir: '$REPO_NAME/data-processing-code/target'
+  dir: 'Dataflow-CloudBuild-CICD/target'
   id: 'deploy-jar'
 
 options:
