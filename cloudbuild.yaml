@@ -17,7 +17,7 @@ steps:
   id: 'check-out-source-code'
 - name: labelinsight/java-maven:3.6.3-jdk-11
   entrypoint: mvn
-  args: ['package', '-q']
+  args: ['clean install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
   dir: 'Dataflow-CloudBuild-CICD'
   id: 'build-jar'
 
