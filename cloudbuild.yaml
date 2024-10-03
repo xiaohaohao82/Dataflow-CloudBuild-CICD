@@ -53,12 +53,12 @@ steps:
   id: 'set-composer-jar-ref'
 
 - name: gcr.io/cloud-builders/gsutil
-  args: ['cp', 'compare_xcom_maps.py', 'gs://dataflow-cicd-434314-composer-dag-test']
+  args: ['cp', 'compare_xcom_maps.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
   dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
   id: 'deploy-custom-operator'
 
 - name: gcr.io/cloud-builders/gsutil
-  args: ['cp', 'data-pipeline-test.py', 'gs://dataflow-cicd-434314-composer-dag-test']
+  args: ['cp', 'data-pipeline-test.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
   dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
   id: 'deploy-processing-pipeline'
 
