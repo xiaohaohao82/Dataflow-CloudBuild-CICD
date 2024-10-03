@@ -38,5 +38,19 @@ steps:
   env: ['PYTHONPATH=/home/airflow/.local/lib/python3.7/site-packages']
   id: 'unit-test-on-operator-code'
 
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'support-files/input.txt', 'gs://dataflow-cicd-434314-composer-input-test']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-test-input-file'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'support-files/ref.txt', 'gs://dataflow-cicd-434314-composer-ref-test']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-test-ref-file'
+
+- name: gcr.io/cloud-builders/gcloud
+  args: ['composer', 'environments', 'run', '${_COMPOSER_ENV_NAME}', '--location', 'europe-west1', 'variables', 'set', '--', 'dataflow_jar_file_test', 'dataflow_deployment_$BUILD_ID.jar']
+  id: 'set-composer-jar-ref'
+
 options:
   logging: CLOUD_LOGGING_ONLY
