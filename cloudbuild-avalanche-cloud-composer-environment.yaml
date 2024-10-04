@@ -1,0 +1,76 @@
+# Copyright 2019 Google Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#         http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+steps:
+- name: gcr.io/cloud-builders/git
+  args: ['clone', 'https://github.com/xiaohaohao82/Dataflow-CloudBuild-CICD.git']
+  id: 'check-out-source-code'
+
+- name: maven:3.6.3-jdk-11
+  entrypoint: mvn
+  args: ['clean']
+
+- name: maven:3.6.3-jdk-11
+  entrypoint: mvn
+  args: ['install', '-P', 'autoInstallPackage', '-Dmaven.wagon.http.ssl.insecure=true', '-Dmaven.wagon.http.ssl.allowall=true']
+  dir: 'Dataflow-CloudBuild-CICD'
+  id: 'build-jar'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', '*bundled*.jar', 'gs://dataflow-cicd-434314-composer-dataflow-source-test/dataflow_deployment_$BUILD_ID.jar']
+  dir: 'Dataflow-CloudBuild-CICD/target'
+  id: 'deploy-jar'
+
+- name: 'apache/airflow:slim-2.3.1-python3.7'
+  entrypoint: 'python'
+  args: ['test_compare_xcom_maps.py']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  env: ['PYTHONPATH=/home/airflow/.local/lib/python3.7/site-packages']
+  id: 'unit-test-on-operator-code'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'support-files/input.txt', 'gs://dataflow-cicd-434314-composer-input-test']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-test-input-file'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'support-files/ref.txt', 'gs://dataflow-cicd-434314-composer-ref-test']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-test-ref-file'
+
+- name: gcr.io/cloud-builders/gcloud
+  args: ['composer', 'environments', 'run', 'avalanche-cloud-composer', '--location', 'us-east1', 'variables', 'set', '--', 'dataflow_jar_file_test', 'dataflow_deployment_$BUILD_ID.jar']
+  id: 'set-composer-jar-ref'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'compare_xcom_maps.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-custom-operator'
+
+- name: gcr.io/cloud-builders/gsutil
+  args: ['cp', 'data-pipeline-test.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
+  dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
+  id: 'deploy-processing-pipeline'
+
+- name: gcr.io/cloud-builders/gcloud
+  entrypoint: 'bash'
+  args: ['wait_for_dag_deployed.sh', 'avalanche-cloud-composer', 'us-east1', 'test_word_count', '6', '20']
+  dir: 'Dataflow-CloudBuild-CICD/build-pipeline'
+  id: 'wait-for-dag-deployed-on-composer'
+
+- name: gcr.io/cloud-builders/gcloud
+  args: ['composer', 'environments', 'run', 'avalanche-cloud-composer', '--location', 'us-east1', 'dags', 'trigger', '--', 'test_word_count', '--run-id=$BUILD_ID']
+  id: 'trigger-pipeline-execution'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
