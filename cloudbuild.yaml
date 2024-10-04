@@ -49,27 +49,27 @@ steps:
     id: 'deploy-test-ref-file'
 
   - name: gcr.io/cloud-builders/gcloud
-    args: ['composer', 'environments', 'run', 'avalanche-cloud-composer-environment', '--location', 'europe-west1', 'variables', 'set', '--', 'dataflow_jar_file_test', 'dataflow_deployment_$BUILD_ID.jar']
+    args: ['composer', 'environments', 'run', 'avalanche-cloud-composer', '--location', 'us-east1', 'variables', 'set', '--', 'dataflow_jar_file_test', 'dataflow_deployment_$BUILD_ID.jar']
     id: 'set-composer-jar-ref'
 
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', 'compare_xcom_maps.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
+    args: ['cp', 'compare_xcom_maps.py', 'gs://us-east1-avalanche-cloud-co-fcd1baaf-bucket/dags']
     dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
     id: 'deploy-custom-operator'
 
   - name: gcr.io/cloud-builders/gsutil
-    args: ['cp', 'data-pipeline-test.py', 'gs://europe-west1-avalanche-clou-915adc94-bucket/dags']
+    args: ['cp', 'data-pipeline-test.py', 'gs://us-east1-avalanche-cloud-co-fcd1baaf-bucket/dags']
     dir: 'Dataflow-CloudBuild-CICD/workflow-dag'
     id: 'deploy-processing-pipeline'
 
   - name: gcr.io/cloud-builders/gcloud
     entrypoint: 'bash'
-    args: ['wait_for_dag_deployed.sh', 'avalanche-cloud-composer-environment', 'europe-west1', 'test_word_count', '6', '20']
+    args: ['wait_for_dag_deployed.sh', 'avalanche-cloud-composer', 'us-east1', 'test_word_count', '6', '20']
     dir: 'Dataflow-CloudBuild-CICD/build-pipeline'
     id: 'wait-for-dag-deployed-on-composer'
 
   - name: gcr.io/cloud-builders/gcloud
-    args: ['composer', 'environments', 'run', 'avalanche-cloud-composer-environment', '--location', 'europe-west1', 'dags', 'trigger', '--', 'test_word_count', '--run-id=$BUILD_ID']
+    args: ['composer', 'environments', 'run', 'avalanche-cloud-composer', '--location', 'us-east1', 'dags', 'trigger', '--', 'test_word_count', '--run-id=$BUILD_ID']
     id: 'trigger-pipeline-execution'
 
 options:
